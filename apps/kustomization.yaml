@@ -4,3 +4,4 @@ resources:
   - authority.yaml
   - servicex.yaml
   - servicey.yaml
+  - authority/authority.yaml
