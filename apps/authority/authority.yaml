@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authority
+  namespace: authority
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authority
+  template:
+    metadata:
+      labels:
+        app: authority
+    spec:
+      containers:
+        - name: authority
+          image: hamidhirsi/authority:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/kpf/enable-config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cleverbit-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authority
+  namespace: authority
+spec:
+  selector:
+    app: authority
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: authority-gateway
+  namespace: authority
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "authority.cb-interview.com"
+      tls:
+        httpsRedirect: true
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: authority
+  namespace: authority
+spec:
+  hosts:
+    - "authority.cb-interview.com"
+  gateways:
+    - authority-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: authority
+            port:
+              number: 80

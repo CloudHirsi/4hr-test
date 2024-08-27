@@ -10,7 +10,7 @@ spec:
   # REMOVE BELOVE LINES INCASE WHEN CANDIDATES WILL USE A PUBLIC REPO. OTHERWISE ENABLE BELOW LINES
   # secretRef:
   #   name: flux-system
-  url: ssh://git@github.com/YOUR_ACCOUNT/YOUR_REPO
+  url: ssh://git@github.com/CloudHirsi/4hr-test.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
