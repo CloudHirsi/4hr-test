@@ -5,3 +5,5 @@ resources:
   - servicex.yaml
   - servicey.yaml
   - authority/authority.yaml
+  - servicex/servicex.yaml
+  - servicey/servicey.yaml

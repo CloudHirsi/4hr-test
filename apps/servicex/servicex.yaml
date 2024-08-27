@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servicex
+  namespace: servicex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: servicex
+  template:
+    metadata:
+      labels:
+        app: servicex
+    spec:
+      containers:
+        - name: servicex
+          image: hamidhirsi/s2s:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /app/kpf/secret
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: cleverbit-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicex
+  namespace: servicex
+spec:
+  selector:
+    app: servicex
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: servicex-gateway
+  namespace: servicex
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "servicex.cb-interview.com"
+      tls:
+        httpsRedirect: true
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: servicex
+  namespace: servicex
+spec:
+  hosts:
+    - "servicex.cb-interview.com"
+  gateways:
+    - servicex-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: servicex
+            port:
+              number: 80

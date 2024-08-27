@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servicey
+  namespace: servicey
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: servicey
+  template:
+    metadata:
+      labels:
+        app: servicey
+    spec:
+      containers:
+        - name: servicey
+          image: hamidhirsi/s2s:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /app/kpf/secret
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: cleverbit-secret
