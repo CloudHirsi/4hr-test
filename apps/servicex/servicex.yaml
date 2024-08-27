@@ -14,17 +14,22 @@ spec:
         app: servicex
     spec:
       containers:
-        - name: servicex
-          image: hamidhirsi/s2s:latest
-          ports:
-            - containerPort: 8080
-          volumeMounts:
-            - name: secret-volume
-              mountPath: /app/kpf/secret
-      volumes:
+      - name: servicex
+        image: hamidhirsi/s2s:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
         - name: secret-volume
-          secret:
-            secretName: cleverbit-secret
+          mountPath: /app/kpf/secret
+        - name: config-volume
+          mountPath: /app/kpf/enable-config
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: cleverbit-secret
+      - name: config-volume
+        configMap:
+          name: cleverbit-config
 ---
 apiVersion: v1
 kind: Service

@@ -14,14 +14,14 @@ spec:
         app: servicey
     spec:
       containers:
-        - name: servicey
-          image: hamidhirsi/s2s:latest
-          ports:
-            - containerPort: 8080
-          volumeMounts:
-            - name: secret-volume
-              mountPath: /app/kpf/secret
+      - name: servicey
+        image: hamidhirsi/s2s:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/kpf/enable-config
       volumes:
-        - name: secret-volume
-          secret:
-            secretName: cleverbit-secret
+      - name: config-volume
+        configMap:
+          name: cleverbit-config
