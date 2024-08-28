@@ -25,3 +25,16 @@ spec:
       - name: config-volume
         configMap:
           name: cleverbit-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicey
+  namespace: servicey
+spec:
+  selector:
+    app: servicey
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
